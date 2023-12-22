@@ -1,3 +1,5 @@
+import getChampionNames from "./championNames.js";
+console.log(getChampionNames());
 const cards = document.querySelectorAll(".card");
 const turnL = document.querySelectorAll(".L");
 const turnR = document.querySelectorAll(".R");
@@ -95,11 +97,10 @@ function backgrounMusic() {
 
 function start() {
   toModify.textContent = "progress...";
-  let array = [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8];
-  array.sort(() => (Math.random() > 0.5 ? 1 : -1));
+  const dataNameImage = getChampionNames();
   cards.forEach((card, index) => {
     let imgTag = card.querySelector(".back-view img");
-    imgTag.src = `./Assets/img/${array[index]}.jpg`;
+    imgTag.src = `./Assets/img/champions/${dataNameImage[index]}.jpg`;
     card.addEventListener("click", flipCard);
   });
 }
