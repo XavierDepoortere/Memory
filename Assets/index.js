@@ -349,16 +349,18 @@ rangeInputSM.addEventListener("mouseup", () => {
 
 function saveLocalstorage(newFlip, newChrono) {
   const dataRecovery = localStorage.getItem("saveScore");
-  const newRank = Math.round((newChrono / newFlip) * 10);
+  const newRank = calculateRank(newFlip, newChrono);
+  console.log(newRank);
   if (dataRecovery) {
     const saveScore = JSON.parse(dataRecovery);
-    if (newRank < parseInt(saveScore.rank)) {
+    if (newRank > parseInt(saveScore.rank)) {
       saveScore.flip = newFlip;
       saveScore.chrono = newChrono;
       saveScore.rank = newRank;
       localStorage.setItem("saveScore", JSON.stringify(saveScore));
     }
   } else {
+    console.log(newRank);
     let saveScore = { flip: newFlip, chrono: newChrono, rank: newRank };
     localStorage.setItem("saveScore", JSON.stringify(saveScore));
   }
@@ -369,11 +371,22 @@ initializeRangeSlider2();
 /*FUNCTION TO RECOVER THE BEST SCORE OF LOCALSTORAGE*/
 function getBestScore() {
   const bestScore = JSON.parse(localStorage.getItem("saveScore"));
-  console.log(bestScore);
   if (bestScore) {
     bSFlip.textContent = `${bestScore.flip}`;
     bSChrono.textContent = `${bestScore.chrono}`;
     bSRank.textContent = `${bestScore.rank}`;
   }
 }
+
+function calculateRank(flips, timeInTenths) {
+  const weightTime = 0.7;
+  const weightFlips = 0.3;
+  const inverseTime = 1 / timeInTenths;
+  const inverseFlips = 1 / flips;
+  const score = Math.round(
+    (weightTime * inverseTime + weightFlips * inverseFlips) * 1000
+  );
+  return score;
+}
+
 getBestScore();
